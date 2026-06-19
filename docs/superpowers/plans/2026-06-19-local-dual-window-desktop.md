@@ -80,7 +80,7 @@
 - [x] Run `npm.cmd test`.
 - [x] Run `npm.cmd run build`.
 - [x] Run desktop command far enough to confirm Electron starts or report the exact blocker.
-- [ ] Commit and push the completed changes to GitHub.
+- [x] Commit and push the completed changes to GitHub.
 
 ## Self-Review
 
