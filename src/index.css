@@ -1,0 +1,367 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at 8% 8%, rgba(255, 205, 218, 0.62), transparent 30%),
+    radial-gradient(circle at 90% 12%, rgba(199, 231, 255, 0.78), transparent 26%),
+    #fff8f6;
+}
+
+button {
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+button:active {
+  transform: scale(0.96);
+}
+
+.soft-button {
+  @apply rounded-2xl px-4 py-2 text-sm font-black text-slate-700 shadow-sm;
+}
+
+.desktop-panel,
+.shared-home {
+  @apply flex flex-col gap-4 rounded-[30px] border border-white/80 bg-white/70 p-4 shadow-soft backdrop-blur;
+}
+
+.desktop-stage {
+  @apply relative min-h-[330px] overflow-hidden rounded-[26px] border border-white bg-gradient-to-br from-[#fff1f5] via-[#f7f1ff] to-[#eaf7ff] p-4;
+}
+
+.desktop-stage::before {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border-radius: 22px;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.42) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.42) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.desktop-stage-compact .pet {
+  transform: scale(0.72);
+}
+
+.taskbar {
+  @apply absolute bottom-3 left-3 right-3 z-10 flex items-center justify-between rounded-2xl bg-white/80 px-3 py-2 text-xs font-bold text-slate-500 shadow-sm;
+}
+
+.pet {
+  @apply absolute bottom-14 right-8 z-20 flex h-44 w-36 flex-col items-center justify-center;
+  animation: breathe 2.8s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.pet-edge {
+  right: -42px;
+}
+
+.pet-compact {
+  right: -10px;
+  bottom: 36px;
+}
+
+.pet-click-through {
+  opacity: 0.58;
+}
+
+.pet-face {
+  @apply relative z-10 flex h-24 w-28 items-center justify-center gap-3 rounded-[44%] border-4 border-white shadow-lg;
+}
+
+.pet-pink .pet-face,
+.pet-pink .pet-body,
+.pet-pink .pet-ear {
+  background: linear-gradient(145deg, #ffc4d4, #fff3f5);
+}
+
+.pet-blue .pet-face,
+.pet-blue .pet-body,
+.pet-blue .pet-ear {
+  background: linear-gradient(145deg, #bde4ff, #f3fbff);
+}
+
+.pet-ear {
+  @apply absolute top-5 h-9 w-9 rotate-45 rounded-xl border-4 border-white;
+}
+
+.pet-ear-left {
+  left: 19px;
+}
+
+.pet-ear-right {
+  right: 19px;
+}
+
+.pet-eye {
+  @apply h-4 w-4 rounded-full bg-slate-700;
+}
+
+.pet-mouth {
+  @apply text-lg font-black text-slate-600;
+}
+
+.pet-cheeks {
+  @apply absolute top-[88px] z-20 h-3 w-20 rounded-full;
+  background: radial-gradient(circle at left, #ff8dad 0 12px, transparent 13px),
+    radial-gradient(circle at right, #ff8dad 0 12px, transparent 13px);
+}
+
+.pet-body {
+  @apply -mt-3 flex h-20 w-24 items-center justify-center gap-1 rounded-[40%] border-4 border-white shadow-md;
+}
+
+.pet-hand,
+.pet-heart {
+  @apply text-xl font-black text-white;
+}
+
+.speech-bubble,
+.pet-toast,
+.badge-dot,
+.capsule-badge {
+  @apply absolute z-30 rounded-2xl bg-white/90 px-3 py-2 text-xs font-black text-slate-600 shadow-md;
+}
+
+.speech-bubble {
+  top: 10px;
+  right: 96px;
+  min-width: 74px;
+  text-align: center;
+}
+
+.pet-toast {
+  bottom: 84px;
+  left: 18px;
+}
+
+.badge-dot {
+  right: 16px;
+  top: 16px;
+  color: #d95675;
+}
+
+.capsule-badge {
+  right: 16px;
+  top: 54px;
+  color: #7a63c7;
+}
+
+.mood-pat {
+  animation: pat 0.72s ease-in-out 1, breathe 2.8s ease-in-out infinite 0.72s;
+}
+
+.mood-hug {
+  animation: hug 0.82s ease-in-out 1, breathe 2.8s ease-in-out infinite 0.82s;
+}
+
+.mood-miss .speech-bubble {
+  color: #d95675;
+}
+
+.mood-cheer {
+  animation: cheer 0.7s ease-in-out 1, breathe 2.8s ease-in-out infinite 0.7s;
+}
+
+.mood-focus {
+  filter: saturate(0.82);
+}
+
+.mood-offline {
+  filter: grayscale(0.9);
+  opacity: 0.72;
+}
+
+.section-label {
+  @apply mb-2 text-xs font-black uppercase tracking-[0.14em] text-slate-400;
+}
+
+.interaction-button {
+  @apply flex items-center justify-center gap-2 rounded-2xl bg-white/80 px-3 py-3 text-sm font-black text-slate-700 shadow-sm hover:shadow-md;
+}
+
+.status-button,
+.toggle-button {
+  @apply rounded-2xl bg-white/70 px-3 py-2 text-xs font-black text-slate-500;
+}
+
+.status-button-active,
+.toggle-button-active {
+  @apply bg-[#efe7ff] text-[#7054b8] shadow-sm;
+}
+
+.status-pill {
+  @apply flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-black text-slate-600 shadow-sm;
+}
+
+.status-pill i {
+  @apply h-2.5 w-2.5 rounded-full;
+}
+
+.status-pill-online i {
+  @apply bg-emerald-400;
+}
+
+.status-pill-focus i {
+  @apply bg-violet-400;
+}
+
+.status-pill-offline i {
+  @apply bg-slate-400;
+}
+
+.message-list {
+  @apply flex min-h-[150px] flex-col gap-2 rounded-3xl bg-white/45 p-3;
+}
+
+.message-card {
+  @apply rounded-2xl bg-white/85 p-3 shadow-sm;
+}
+
+.message-status {
+  @apply mb-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-black uppercase;
+}
+
+.status-played {
+  @apply bg-emerald-50 text-emerald-600;
+}
+
+.status-pending {
+  @apply bg-violet-50 text-violet-600;
+}
+
+.status-capsule {
+  @apply bg-amber-50 text-amber-600;
+}
+
+.status-sent {
+  @apply bg-slate-100 text-slate-500;
+}
+
+.home-room {
+  @apply relative min-h-[260px] overflow-hidden rounded-[28px] border border-white bg-gradient-to-b from-[#fff0f4] to-[#eaf8f0];
+}
+
+.home-room::after {
+  content: "";
+  @apply absolute bottom-0 left-0 right-0 h-24 bg-[#dff4dc];
+}
+
+.sofa,
+.table,
+.frame,
+.tree,
+.floating-heart {
+  @apply absolute z-10 text-5xl;
+}
+
+.sofa {
+  left: 34px;
+  bottom: 58px;
+}
+
+.table {
+  left: 142px;
+  bottom: 48px;
+}
+
+.frame {
+  right: 48px;
+  top: 42px;
+  color: #e85c7d;
+}
+
+.tree {
+  right: 46px;
+  bottom: 58px;
+}
+
+.floating-heart {
+  left: 48%;
+  bottom: 82px;
+  color: #e85c7d;
+  animation: floatHeart 1.4s ease-out both;
+}
+
+.timeline-item {
+  @apply flex items-center gap-2 rounded-2xl bg-white/65 px-3 py-2 text-sm text-slate-500;
+}
+
+.timeline-dot {
+  @apply h-2 w-2 rounded-full bg-[#ff9cb3];
+}
+
+.privacy-tag {
+  @apply rounded-full bg-[#eef8f2] px-3 py-1 text-xs font-black text-[#4f9468];
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -6px;
+  }
+}
+
+@keyframes pat {
+  0%,
+  100% {
+    rotate: 0deg;
+  }
+  40% {
+    rotate: -7deg;
+  }
+  70% {
+    rotate: 6deg;
+  }
+}
+
+@keyframes hug {
+  0%,
+  100% {
+    scale: 1;
+  }
+  50% {
+    scale: 1.08;
+  }
+}
+
+@keyframes cheer {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  45% {
+    translate: 0 -18px;
+  }
+}
+
+@keyframes floatHeart {
+  0% {
+    opacity: 0;
+    translate: 0 20px;
+    scale: 0.7;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    translate: 0 -92px;
+    scale: 1.3;
+  }
+}
