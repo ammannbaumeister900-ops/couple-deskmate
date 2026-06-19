@@ -85,6 +85,11 @@ ipcMain.handle("desktop-pet:dispatch", (_event, action: DemoAction) => {
   return snapshot;
 });
 
+ipcMain.handle("desktop-pet:quit", () => {
+  saveSnapshot();
+  app.quit();
+});
+
 app.whenReady().then(() => {
   loadSnapshot();
   createPetWindow("me", 80);

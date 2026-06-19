@@ -6,6 +6,7 @@ export interface DesktopPetApi {
   getState: () => Promise<AppSnapshot>;
   dispatch: (action: DemoAction) => Promise<AppSnapshot>;
   subscribe: (listener: (snapshot: AppSnapshot) => void) => () => void;
+  quit: () => Promise<void>;
 }
 
 declare global {
@@ -15,5 +16,6 @@ declare global {
 }
 
 export function getDesktopPetApi(): DesktopPetApi | undefined {
+  if (typeof window === "undefined") return undefined;
   return window.desktopPet;
 }

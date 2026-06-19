@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld("desktopPet", {
   getViewerId,
   getState: () => ipcRenderer.invoke("desktop-pet:get-state") as Promise<AppSnapshot>,
   dispatch: (action: DemoAction) => ipcRenderer.invoke("desktop-pet:dispatch", action) as Promise<AppSnapshot>,
+  quit: () => ipcRenderer.invoke("desktop-pet:quit") as Promise<void>,
   subscribe: (listener: (snapshot: AppSnapshot) => void) => {
     const handler = (_event: Electron.IpcRendererEvent, snapshot: AppSnapshot) => listener(snapshot);
     ipcRenderer.on("desktop-pet:state-changed", handler);

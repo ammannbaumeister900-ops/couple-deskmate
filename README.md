@@ -34,6 +34,18 @@ This starts Vite, then opens two Electron windows:
 
 Actions sent in one window are applied in the Electron main process and broadcast to both windows.
 
+The app also exposes a desktop-only `退出` button in the header. It saves the current demo snapshot and exits both windows.
+
+## Windows Desktop Launcher
+
+For this workspace, a desktop launcher can run the production preview:
+
+```text
+C:\Users\admin\Desktop\Couple Deskmate.cmd
+```
+
+The tracked helper script is `scripts/start-desktop-preview.cmd`.
+
 ## Production Preview
 
 ```powershell

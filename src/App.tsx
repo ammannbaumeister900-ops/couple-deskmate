@@ -44,6 +44,7 @@ export default function App() {
         <HeaderBar
           isFullscreen={isFullscreen}
           onFullscreen={() => dispatch({ type: "setFullscreenSimulation", isFullscreen: !isFullscreen })}
+          onQuit={isDesktop ? () => void getDesktopPetApi()?.quit() : undefined}
           onReset={() => dispatch({ type: "resetDemo" })}
         />
 
@@ -133,10 +134,12 @@ function useAppSnapshot() {
 function HeaderBar({
   isFullscreen,
   onFullscreen,
+  onQuit,
   onReset,
 }: {
   isFullscreen: boolean;
   onFullscreen: () => void;
+  onQuit?: () => void;
   onReset: () => void;
 }) {
   return (
@@ -155,6 +158,11 @@ function HeaderBar({
         <button className="soft-button bg-[#ffe8ef]" onClick={onReset}>
           重置 Demo
         </button>
+        {onQuit && (
+          <button className="soft-button bg-[#f1f5f9]" onClick={onQuit}>
+            退出
+          </button>
+        )}
       </div>
     </header>
   );
