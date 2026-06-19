@@ -29,10 +29,10 @@
 - Create: `src/appActions.ts`
 - Create: `src/appActions.test.ts`
 
-- [ ] Define a `DemoAction` union with `sendInteraction`, `setUserStatus`, `toggleUserFlag`, `clearHistory`, `resetDemo`, and `setFullscreenSimulation`.
-- [ ] Implement `applyDemoAction(state, action)` by delegating to existing pure functions.
-- [ ] Add Vitest tests for online, focus, offline, reset, and fullscreen action behavior.
-- [ ] Run `npm.cmd test`.
+- [x] Define a `DemoAction` union with `sendInteraction`, `setUserStatus`, `toggleUserFlag`, `clearHistory`, `resetDemo`, and `setFullscreenSimulation`.
+- [x] Implement `applyDemoAction(state, action)` by delegating to existing pure functions.
+- [x] Add Vitest tests for online, focus, offline, reset, and fullscreen action behavior.
+- [x] Run `npm.cmd test`.
 
 ## Task 2: Electron Shell
 
@@ -42,11 +42,11 @@
 - Modify: `package.json`
 - Modify: `tsconfig.node.json`
 
-- [ ] Add Electron as a dev dependency.
-- [ ] Add scripts: `desktop:dev`, `desktop:preview`, `build`.
-- [ ] Create two BrowserWindows with `?viewer=me` and `?viewer=partner`.
-- [ ] Expose `getState`, `dispatch`, `subscribe`, and `getViewerId` from preload.
-- [ ] Wire IPC handlers in main.
+- [x] Add Electron as a dev dependency.
+- [x] Add scripts: `desktop:dev`, `desktop:preview`, `build`.
+- [x] Create two BrowserWindows with `?viewer=me` and `?viewer=partner`.
+- [x] Expose `getState`, `dispatch`, `subscribe`, and `getViewerId` from preload.
+- [x] Wire IPC handlers in main.
 
 ## Task 3: Persistence
 
@@ -55,10 +55,10 @@
 - Modify: `src/demoState.ts`
 - Test: `src/appActions.test.ts`
 
-- [ ] Persist `DemoState` to `demo-state.json`.
-- [ ] Load persisted state on startup.
-- [ ] Fall back to `createInitialState()` when persisted data is missing or invalid.
-- [ ] Keep persistence failures non-fatal.
+- [x] Persist `DemoState` to `demo-state.json`.
+- [x] Load persisted state on startup.
+- [x] Fall back to `createInitialState()` when persisted data is missing or invalid.
+- [x] Keep persistence failures non-fatal.
 
 ## Task 4: Renderer Sync
 
@@ -66,20 +66,20 @@
 - Create: `src/desktopApi.ts`
 - Modify: `src/App.tsx`
 
-- [ ] Add a hook that uses Electron IPC when `window.desktopPet` exists.
-- [ ] Keep browser fallback using local state.
-- [ ] In Electron mode, current window actions use its `viewerId`.
-- [ ] In browser mode, keep the existing three-panel demo behavior.
+- [x] Add a hook that uses Electron IPC when `window.desktopPet` exists.
+- [x] Keep browser fallback using local state.
+- [x] In Electron mode, current window actions use its `viewerId`.
+- [x] In browser mode, keep the existing three-panel demo behavior.
 
 ## Task 5: Documentation and Verification
 
 **Files:**
 - Create: `README.md`
 
-- [ ] Document install, browser dev, desktop dev, tests, build, and persistence location.
-- [ ] Run `npm.cmd test`.
-- [ ] Run `npm.cmd run build`.
-- [ ] Run desktop command far enough to confirm Electron starts or report the exact blocker.
+- [x] Document install, browser dev, desktop dev, tests, build, and persistence location.
+- [x] Run `npm.cmd test`.
+- [x] Run `npm.cmd run build`.
+- [x] Run desktop command far enough to confirm Electron starts or report the exact blocker.
 - [ ] Commit and push the completed changes to GitHub.
 
 ## Self-Review

@@ -1,16 +1,13 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { AppSnapshot, applyDemoAction, createInitialSnapshot, DemoAction } from "./appActions";
+import { getDesktopPetApi } from "./desktopApi";
 import {
-  clearHistory,
   createInitialState,
   InteractionMessage,
   interactionLabels,
   InteractionType,
   otherUser,
-  playQueuedMessages,
-  sendInteraction,
-  setUserStatus,
   statusLabels,
-  toggleUserFlag,
   UserId,
   UserStatus,
 } from "./demoState";
@@ -25,66 +22,112 @@ const interactions: Array<{ type: InteractionType; icon: string }> = [
 const statuses: UserStatus[] = ["online", "focus", "offline"];
 
 export default function App() {
-  const [state, setState] = useState(createInitialState);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const { dispatch, isDesktop, snapshot, viewerId } = useAppSnapshot();
+  const { state, isFullscreen } = snapshot;
 
   function updateStatus(userId: UserId, status: UserStatus) {
-    setState((current) => {
-      const changed = setUserStatus(current, userId, status);
-      return status === "online" ? playQueuedMessages(changed, userId) : changed;
-    });
+    dispatch({ type: "setUserStatus", userId, status });
   }
 
   function interact(fromUserId: UserId, type: InteractionType) {
-    setState((current) => sendInteraction(current, fromUserId, otherUser(fromUserId), type));
+    dispatch({ type: "sendInteraction", fromUserId, interactionType: type });
   }
 
   const recentMessages = useMemo(() => state.messages.slice(-5).reverse(), [state.messages]);
+  const desktopMessages = recentMessages.filter(
+    (message) => message.toUserId === viewerId || message.fromUserId === viewerId,
+  );
 
   return (
     <main className="min-h-screen bg-[#fff8f6] text-slate-800">
-      <div className="mx-auto flex min-h-screen max-w-[1500px] flex-col gap-5 px-4 py-5">
+      <div className={`mx-auto flex min-h-screen flex-col gap-5 px-4 py-5 ${isDesktop ? "max-w-[980px]" : "max-w-[1500px]"}`}>
         <HeaderBar
           isFullscreen={isFullscreen}
-          onFullscreen={() => setIsFullscreen((value) => !value)}
-          onReset={() => {
-            setState(createInitialState());
-            setIsFullscreen(false);
-          }}
+          onFullscreen={() => dispatch({ type: "setFullscreenSimulation", isFullscreen: !isFullscreen })}
+          onReset={() => dispatch({ type: "resetDemo" })}
         />
 
-        <section className="grid flex-1 gap-5 xl:grid-cols-[1fr_360px_1fr]">
-          <DesktopPanel
-            userId="me"
-            state={state}
-            isFullscreen={isFullscreen}
-            messages={recentMessages.filter((message) => message.toUserId === "me" || message.fromUserId === "me")}
-            onInteract={interact}
-            onStatus={updateStatus}
-            onToggle={(flag) => setState((current) => toggleUserFlag(current, "me", flag))}
-          />
-          <SharedHomePanel pulse={state.sharedHome.pulse} home={state.sharedHome} />
-          <DesktopPanel
-            userId="partner"
-            state={state}
-            isFullscreen={isFullscreen}
-            messages={recentMessages.filter(
-              (message) => message.toUserId === "partner" || message.fromUserId === "partner",
-            )}
-            onInteract={interact}
-            onStatus={updateStatus}
-            onToggle={(flag) => setState((current) => toggleUserFlag(current, "partner", flag))}
-          />
-        </section>
+        {isDesktop ? (
+          <section className="grid flex-1 gap-5 lg:grid-cols-[1fr_340px]">
+            <DesktopPanel
+              userId={viewerId}
+              state={state}
+              isFullscreen={isFullscreen}
+              messages={desktopMessages}
+              onInteract={interact}
+              onStatus={updateStatus}
+              onToggle={(flag) => dispatch({ type: "toggleUserFlag", userId: viewerId, flag })}
+            />
+            <SharedHomePanel pulse={state.sharedHome.pulse} home={state.sharedHome} />
+          </section>
+        ) : (
+          <section className="grid flex-1 gap-5 xl:grid-cols-[1fr_360px_1fr]">
+            <DesktopPanel
+              userId="me"
+              state={state}
+              isFullscreen={isFullscreen}
+              messages={recentMessages.filter((message) => message.toUserId === "me" || message.fromUserId === "me")}
+              onInteract={interact}
+              onStatus={updateStatus}
+              onToggle={(flag) => dispatch({ type: "toggleUserFlag", userId: "me", flag })}
+            />
+            <SharedHomePanel pulse={state.sharedHome.pulse} home={state.sharedHome} />
+            <DesktopPanel
+              userId="partner"
+              state={state}
+              isFullscreen={isFullscreen}
+              messages={recentMessages.filter(
+                (message) => message.toUserId === "partner" || message.fromUserId === "partner",
+              )}
+              onInteract={interact}
+              onStatus={updateStatus}
+              onToggle={(flag) => dispatch({ type: "toggleUserFlag", userId: "partner", flag })}
+            />
+          </section>
+        )}
 
         <section className="grid gap-5 lg:grid-cols-[1.1fr_1fr_1fr]">
           <GlobalTimeline timeline={state.timeline} />
-          <PrivacyPanel onClear={() => setState(clearHistory)} />
+          <PrivacyPanel onClear={() => dispatch({ type: "clearHistory" })} />
           <DemoGuidePanel />
         </section>
       </div>
     </main>
   );
+}
+
+function useAppSnapshot() {
+  const api = getDesktopPetApi();
+  const [snapshot, setSnapshot] = useState<AppSnapshot>(createInitialSnapshot);
+  const [viewerId] = useState<UserId>(() => api?.getViewerId() ?? "me");
+
+  useEffect(() => {
+    if (!api) return;
+    let mounted = true;
+    void api.getState().then((next) => {
+      if (mounted) setSnapshot(next);
+    });
+    const unsubscribe = api.subscribe(setSnapshot);
+    return () => {
+      mounted = false;
+      unsubscribe();
+    };
+  }, [api]);
+
+  function dispatch(action: DemoAction) {
+    if (!api) {
+      setSnapshot((current) => applyDemoAction(current, action));
+      return;
+    }
+    void api.dispatch(action).then(setSnapshot);
+  }
+
+  return {
+    dispatch,
+    isDesktop: Boolean(api),
+    snapshot,
+    viewerId,
+  };
 }
 
 function HeaderBar({
