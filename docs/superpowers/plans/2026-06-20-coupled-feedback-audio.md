@@ -17,4 +17,4 @@
 - [x] Update pet speech, CSS feedback states, and role labels.
 - [x] Add generated interaction sounds respecting mute.
 - [x] Run `npm.cmd test`, `npm.cmd run build`, and desktop preview smoke test.
-- [ ] Commit and push.
+- [x] Commit and push.
