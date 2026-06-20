@@ -17,6 +17,8 @@ const windows = new Set<BrowserWindow>();
 
 let snapshot: AppSnapshot = createInitialSnapshot();
 
+app.commandLine.appendSwitch("autoplay-policy", "no-user-gesture-required");
+
 function statePath() {
   return join(app.getPath("userData"), "demo-state.json");
 }

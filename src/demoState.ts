@@ -2,6 +2,8 @@ export type UserStatus = "online" | "focus" | "offline";
 export type InteractionType = "pat" | "hug" | "miss" | "cheer";
 export type MessageStatus = "sent" | "pending" | "played" | "capsule";
 export type UserId = "me" | "partner";
+export type InteractionMood = `${InteractionType}Sent` | `${InteractionType}Received`;
+export type UserMood = InteractionMood | "idle" | "happy" | "focus" | "offline";
 
 export interface CoupleUser {
   id: UserId;
@@ -12,7 +14,7 @@ export interface CoupleUser {
   isMuted: boolean;
   isWorkMode: boolean;
   isClickThrough: boolean;
-  mood: InteractionType | "idle" | "happy" | "focus" | "offline";
+  mood: UserMood;
   pendingCount: number;
   capsuleCount: number;
   toast: string;
@@ -131,12 +133,12 @@ export function sendInteraction(
     ...state.users,
     [fromUserId]: {
       ...sender,
-      mood: type,
+      mood: toSentMood(type),
       toast: `已发送${label}`,
     },
     [toUserId]: {
       ...receiver,
-      mood: receiver.status === "online" ? type : receiver.status,
+      mood: receiver.status === "online" ? toReceivedMood(type) : receiver.status,
       pendingCount: receiver.pendingCount + (status === "pending" ? 1 : 0),
       capsuleCount: receiver.capsuleCount + (status === "capsule" ? 1 : 0),
       toast:
@@ -192,7 +194,7 @@ export function playQueuedMessages(state: DemoState, userId: UserId): DemoState 
       ...state.users,
       [userId]: {
         ...user,
-        mood: last?.type ?? "happy",
+        mood: last ? toReceivedMood(last.type) : "happy",
         pendingCount: 0,
         capsuleCount: 0,
         toast: `接收了 ${queued.length} 个小心意`,
@@ -270,4 +272,12 @@ function messageStatusText(status: MessageStatus): string {
   if (status === "pending") return "待接收";
   if (status === "capsule") return "离线胶囊";
   return "已发送";
+}
+
+function toSentMood(type: InteractionType): InteractionMood {
+  return `${type}Sent`;
+}
+
+function toReceivedMood(type: InteractionType): InteractionMood {
+  return `${type}Received`;
 }

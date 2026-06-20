@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AppSnapshot, applyDemoAction, createInitialSnapshot, DemoAction } from "./appActions";
 import { getDesktopPetApi } from "./desktopApi";
 import {
@@ -37,6 +37,17 @@ export default function App() {
   const desktopMessages = recentMessages.filter(
     (message) => message.toUserId === viewerId || message.fromUserId === viewerId,
   );
+  const latestMessage = state.messages.at(-1);
+  const lastSoundMessageId = useRef("");
+
+  useEffect(() => {
+    if (!latestMessage) return;
+    if (lastSoundMessageId.current === latestMessage.id) return;
+    if (latestMessage.fromUserId !== viewerId && latestMessage.toUserId !== viewerId) return;
+    lastSoundMessageId.current = latestMessage.id;
+    if (state.users[viewerId].isMuted) return;
+    playInteractionSound(latestMessage.type, latestMessage.toUserId === viewerId ? "received" : "sent");
+  }, [latestMessage?.id, state.users, viewerId]);
 
   return (
     <main className="min-h-screen bg-[#fff8f6] text-slate-800">
@@ -129,6 +140,37 @@ function useAppSnapshot() {
     snapshot,
     viewerId,
   };
+}
+
+function playInteractionSound(type: InteractionType, side: "sent" | "received") {
+  if (typeof window === "undefined") return;
+  const audioWindow = window as Window & typeof globalThis & { webkitAudioContext?: typeof AudioContext };
+  const AudioContextClass = audioWindow.AudioContext ?? audioWindow.webkitAudioContext;
+  if (!AudioContextClass) return;
+
+  const audio = new AudioContextClass();
+  const oscillator = audio.createOscillator();
+  const gain = audio.createGain();
+  const baseFrequency: Record<InteractionType, number> = {
+    pat: 660,
+    hug: 520,
+    miss: 440,
+    cheer: 780,
+  };
+  const start = audio.currentTime;
+  const duration = side === "received" ? 0.18 : 0.12;
+
+  oscillator.type = side === "received" ? "sine" : "triangle";
+  oscillator.frequency.setValueAtTime(baseFrequency[type], start);
+  oscillator.frequency.exponentialRampToValueAtTime(baseFrequency[type] * 1.22, start + duration);
+  gain.gain.setValueAtTime(0.0001, start);
+  gain.gain.exponentialRampToValueAtTime(side === "received" ? 0.08 : 0.045, start + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+  oscillator.connect(gain);
+  gain.connect(audio.destination);
+  oscillator.start(start);
+  oscillator.stop(start + duration);
+  oscillator.onended = () => void audio.close();
 }
 
 function HeaderBar({
@@ -274,6 +316,7 @@ function PetCharacter({
     >
       <div className="pet-ear pet-ear-left" />
       <div className="pet-ear pet-ear-right" />
+      <div className="pet-mark">{user.avatarTheme === "pink" ? "✦" : "叶"}</div>
       <div className="pet-face">
         <span className="pet-eye" />
         <span className="pet-mouth">{user.status === "offline" ? "z" : "⌣"}</span>
@@ -425,10 +468,14 @@ function StatusPill({ status }: { status: UserStatus }) {
 }
 
 function speechFor(mood: ReturnType<typeof createInitialState>["users"][UserId]["mood"]) {
-  if (mood === "pat") return "星星摸头";
-  if (mood === "hug") return "抱抱一下";
-  if (mood === "miss") return "想你了";
-  if (mood === "cheer") return "加油!";
+  if (mood === "patSent") return "轻轻摸头";
+  if (mood === "patReceived") return "有点害羞";
+  if (mood === "hugSent") return "抱抱发射";
+  if (mood === "hugReceived") return "爱心抱抱";
+  if (mood === "missSent") return "偷偷想你";
+  if (mood === "missReceived") return "收到想念";
+  if (mood === "cheerSent") return "加油光波";
+  if (mood === "cheerReceived") return "能量满格";
   if (mood === "focus") return "专注中";
   if (mood === "offline") return "睡一会";
   if (mood === "happy") return "收到啦";

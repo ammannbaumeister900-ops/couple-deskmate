@@ -90,7 +90,28 @@ button:active {
 .pet-blue .pet-face,
 .pet-blue .pet-body,
 .pet-blue .pet-ear {
-  background: linear-gradient(145deg, #bde4ff, #f3fbff);
+  background: linear-gradient(145deg, #9bd6ff, #e7fff7);
+}
+
+.pet-blue .pet-cheeks {
+  background: radial-gradient(circle at left, #7cc7ff 0 12px, transparent 13px),
+    radial-gradient(circle at right, #7cc7ff 0 12px, transparent 13px);
+}
+
+.pet-blue .pet-heart {
+  color: #5ca7ff;
+}
+
+.pet-mark {
+  @apply absolute right-6 top-8 z-30 rounded-full bg-white/85 px-2 py-1 text-xs font-black shadow-sm;
+}
+
+.pet-pink .pet-mark {
+  color: #d95675;
+}
+
+.pet-blue .pet-mark {
+  color: #2f83c5;
 }
 
 .pet-ear {
@@ -159,20 +180,48 @@ button:active {
   color: #7a63c7;
 }
 
-.mood-pat {
+.mood-patSent {
+  animation: cheer 0.45s ease-in-out 1, breathe 2.8s ease-in-out infinite 0.45s;
+}
+
+.mood-patReceived {
   animation: pat 0.72s ease-in-out 1, breathe 2.8s ease-in-out infinite 0.72s;
 }
 
-.mood-hug {
+.mood-patReceived .pet-cheeks {
+  filter: saturate(1.5);
+  scale: 1.12;
+}
+
+.mood-hugSent {
+  animation: hug 0.62s ease-in-out 1, breathe 2.8s ease-in-out infinite 0.62s;
+}
+
+.mood-hugReceived {
   animation: hug 0.82s ease-in-out 1, breathe 2.8s ease-in-out infinite 0.82s;
 }
 
-.mood-miss .speech-bubble {
+.mood-hugReceived .pet-heart {
+  color: #ff5f8d;
+  animation: pulseHeart 0.72s ease-in-out 2;
+}
+
+.mood-missSent .speech-bubble,
+.mood-missReceived .speech-bubble {
   color: #d95675;
 }
 
-.mood-cheer {
+.mood-missReceived {
+  animation: hug 0.72s ease-in-out 1, breathe 2.8s ease-in-out infinite 0.72s;
+}
+
+.mood-cheerSent,
+.mood-cheerReceived {
   animation: cheer 0.7s ease-in-out 1, breathe 2.8s ease-in-out infinite 0.7s;
+}
+
+.mood-cheerReceived .speech-bubble {
+  color: #2f83c5;
 }
 
 .mood-focus {
@@ -347,6 +396,16 @@ button:active {
   }
   45% {
     translate: 0 -18px;
+  }
+}
+
+@keyframes pulseHeart {
+  0%,
+  100% {
+    scale: 1;
+  }
+  50% {
+    scale: 1.45;
   }
 }
 

@@ -11,7 +11,8 @@ describe("couple desktop pet interaction state", () => {
     const state = sendInteraction(createInitialState(), "me", "partner", "pat");
 
     expect(state.messages.at(-1)?.status).toBe("played");
-    expect(state.users.partner.mood).toBe("pat");
+    expect(state.users.me.mood).toBe("patSent");
+    expect(state.users.partner.mood).toBe("patReceived");
     expect(state.sharedHome.todayInteractionCount).toBe(1);
   });
 
@@ -36,6 +37,6 @@ describe("couple desktop pet interaction state", () => {
 
     expect(played.messages.at(-1)?.status).toBe("played");
     expect(played.users.partner.capsuleCount).toBe(0);
-    expect(played.users.partner.mood).toBe("miss");
+    expect(played.users.partner.mood).toBe("missReceived");
   });
 });

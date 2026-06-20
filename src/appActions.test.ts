@@ -10,7 +10,8 @@ describe("app action layer", () => {
     });
 
     expect(snapshot.state.messages.at(-1)?.status).toBe("played");
-    expect(snapshot.state.users.partner.mood).toBe("pat");
+    expect(snapshot.state.users.me.mood).toBe("patSent");
+    expect(snapshot.state.users.partner.mood).toBe("patReceived");
     expect(snapshot.state.sharedHome.todayInteractionCount).toBe(1);
   });
 
