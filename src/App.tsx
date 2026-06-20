@@ -11,6 +11,7 @@ import {
   UserId,
   UserStatus,
 } from "./demoState";
+import { desktopUserOrder } from "./viewModel";
 
 const interactions: Array<{ type: InteractionType; icon: string }> = [
   { type: "pat", icon: "✦" },
@@ -37,6 +38,7 @@ export default function App() {
   const desktopMessages = recentMessages.filter(
     (message) => message.toUserId === viewerId || message.fromUserId === viewerId,
   );
+  const desktopUsers = desktopUserOrder(viewerId);
   const latestMessage = state.messages.at(-1);
   const lastSoundMessageId = useRef("");
 
@@ -60,17 +62,28 @@ export default function App() {
         />
 
         {isDesktop ? (
-          <section className="grid flex-1 gap-5 lg:grid-cols-[1fr_340px]">
+          <section className="grid flex-1 grid-cols-2 gap-5">
             <DesktopPanel
-              userId={viewerId}
+              userId={desktopUsers[0]}
               state={state}
               isFullscreen={isFullscreen}
               messages={desktopMessages}
               onInteract={interact}
               onStatus={updateStatus}
-              onToggle={(flag) => dispatch({ type: "toggleUserFlag", userId: viewerId, flag })}
+              onToggle={(flag) => dispatch({ type: "toggleUserFlag", userId: desktopUsers[0], flag })}
             />
-            <SharedHomePanel pulse={state.sharedHome.pulse} home={state.sharedHome} />
+            <DesktopPanel
+              userId={desktopUsers[1]}
+              state={state}
+              isFullscreen={isFullscreen}
+              messages={desktopMessages}
+              onInteract={interact}
+              onStatus={updateStatus}
+              onToggle={(flag) => dispatch({ type: "toggleUserFlag", userId: desktopUsers[1], flag })}
+            />
+            <div className="col-span-2">
+              <SharedHomePanel pulse={state.sharedHome.pulse} home={state.sharedHome} />
+            </div>
           </section>
         ) : (
           <section className="grid flex-1 gap-5 xl:grid-cols-[1fr_360px_1fr]">

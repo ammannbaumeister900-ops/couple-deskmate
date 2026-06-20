@@ -11,5 +11,5 @@
     "rootDir": ".",
     "outDir": "electron-dist"
   },
-  "include": ["vite.config.ts", "electron/**/*.ts", "src/appActions.ts", "src/demoState.ts"]
+  "include": ["vite.config.ts", "electron/**/*.ts", "electron/**/*.cts", "src/appActions.ts", "src/demoState.ts"]
 }

@@ -1,6 +1,6 @@
-import { contextBridge, ipcRenderer } from "electron";
-import { AppSnapshot, DemoAction } from "../src/appActions.js";
-import { UserId } from "../src/demoState.js";
+import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron";
+import type { AppSnapshot, DemoAction } from "../src/appActions";
+import type { UserId } from "../src/demoState";
 
 function getViewerId(): UserId {
   const viewer = new URLSearchParams(window.location.search).get("viewer");
@@ -13,7 +13,7 @@ contextBridge.exposeInMainWorld("desktopPet", {
   dispatch: (action: DemoAction) => ipcRenderer.invoke("desktop-pet:dispatch", action) as Promise<AppSnapshot>,
   quit: () => ipcRenderer.invoke("desktop-pet:quit") as Promise<void>,
   subscribe: (listener: (snapshot: AppSnapshot) => void) => {
-    const handler = (_event: Electron.IpcRendererEvent, snapshot: AppSnapshot) => listener(snapshot);
+    const handler = (_event: IpcRendererEvent, snapshot: AppSnapshot) => listener(snapshot);
     ipcRenderer.on("desktop-pet:state-changed", handler);
     return () => ipcRenderer.removeListener("desktop-pet:state-changed", handler);
   },
